@@ -24,9 +24,6 @@
 		5894F3952FA2BAEA004D765B /* MeditationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5894F3942FA2BAEA004D765B /* MeditationView.swift */; };
 		5894F3992FA2BB29004D765B /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5894F3982FA2BB29004D765B /* ProfileView.swift */; };
 		5894F39B2FA2BB3C004D765B /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5894F39A2FA2BB3C004D765B /* EditProfileView.swift */; };
-		589CCA362FA3B549004EB961 /* test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCA352FA3B549004EB961 /* test.swift */; };
-		589CCA382FA3B558004EB961 /* test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCA372FA3B558004EB961 /* test.swift */; };
-		589CCA3A2FA3B565004EB961 /* database test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCA392FA3B565004EB961 /* database test.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,9 +45,9 @@
 		5894F3942FA2BAEA004D765B /* MeditationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeditationView.swift; sourceTree = "<group>"; };
 		5894F3982FA2BB29004D765B /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		5894F39A2FA2BB3C004D765B /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
-		589CCA352FA3B549004EB961 /* test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = test.swift; path = "Balance-Digital/Views/Approach/test.swift"; sourceTree = SOURCE_ROOT; };
-		589CCA372FA3B558004EB961 /* test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = test.swift; path = "Balance-Digital/Views/Approach/test.swift"; sourceTree = SOURCE_ROOT; };
-		589CCA392FA3B565004EB961 /* database test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "database test.swift"; path = "Balance-Digital/Views/Approach/database test.swift"; sourceTree = SOURCE_ROOT; };
+		589CCA3E2FA3B723004EB961 /* .gitkeep.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = .gitkeep.md; sourceTree = "<group>"; };
+		589CCA3F2FA3B833004EB961 /* test1.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = test1.md; sourceTree = "<group>"; };
+		589CCA402FA3B83E004EB961 /* test2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = test2.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,9 +80,9 @@
 		5894F3642FA2B787004D765B /* Balance-Digital */ = {
 			isa = PBXGroup;
 			children = (
-				5894F3872FA2B9C4004D765B /* Services */,
-				5894F3862FA2B9AF004D765B /* Models */,
-				5894F3852FA2B998004D765B /* Database */,
+				589CCA3D2FA3B6DA004EB961 /* Database */,
+				589CCA3C2FA3B6CF004EB961 /* Models */,
+				589CCA3B2FA3B6C8004EB961 /* Services */,
 				5894F3822FA2B93A004D765B /* ViewModels */,
 				5894F37F2FA2B8AB004D765B /* App */,
 				5894F3782FA2B819004D765B /* Views */,
@@ -187,28 +184,28 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		5894F3852FA2B998004D765B /* Database */ = {
+		589CCA3B2FA3B6C8004EB961 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				589CCA392FA3B565004EB961 /* database test.swift */,
+				589CCA402FA3B83E004EB961 /* test2.md */,
 			);
-			path = Database;
+			path = Services;
 			sourceTree = "<group>";
 		};
-		5894F3862FA2B9AF004D765B /* Models */ = {
+		589CCA3C2FA3B6CF004EB961 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				589CCA372FA3B558004EB961 /* test.swift */,
+				589CCA3F2FA3B833004EB961 /* test1.md */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		5894F3872FA2B9C4004D765B /* Services */ = {
+		589CCA3D2FA3B6DA004EB961 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				589CCA352FA3B549004EB961 /* test.swift */,
+				589CCA3E2FA3B723004EB961 /* .gitkeep.md */,
 			);
-			path = Services;
+			path = Database;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -282,17 +279,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				5894F39B2FA2BB3C004D765B /* EditProfileView.swift in Sources */,
-				589CCA382FA3B558004EB961 /* test.swift in Sources */,
 				5894F3842FA2B953004D765B /* ProfileViewModel.swift in Sources */,
 				5894F3932FA2BAD0004D765B /* DashboardView.swift in Sources */,
 				5894F38D2FA2BA93004D765B /* ApproachView.swift in Sources */,
 				5894F3892FA2BA35004D765B /* LoginView.swift in Sources */,
-				589CCA362FA3B549004EB961 /* test.swift in Sources */,
 				5894F36F2FA2B789004D765B /* Persistence.swift in Sources */,
 				5894F3682FA2B787004D765B /* ContentView.swift in Sources */,
 				5894F3952FA2BAEA004D765B /* MeditationView.swift in Sources */,
 				5894F3662FA2B787004D765B /* Balance_DigitalApp.swift in Sources */,
-				589CCA3A2FA3B565004EB961 /* database test.swift in Sources */,
 				5894F38B2FA2BA5A004D765B /* RegisterView.swift in Sources */,
 				5894F3722FA2B789004D765B /* Balance_Digital.xcdatamodeld in Sources */,
 				5894F3812FA2B8F6004D765B /* MainTabView.swift in Sources */,
