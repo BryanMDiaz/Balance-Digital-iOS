@@ -12,9 +12,14 @@ import UIKit
 struct Balance_DigitalApp: App {
     let persistenceController = PersistenceController.shared
 
+    init() {
+        // Ejecutar limpieza (comenta esta línea después de usarla)
+        // UserManager.shared.deleteAllUsers()
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LoginView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

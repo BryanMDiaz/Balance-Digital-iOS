@@ -24,6 +24,10 @@
 		5894F3952FA2BAEA004D765B /* MeditationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5894F3942FA2BAEA004D765B /* MeditationView.swift */; };
 		5894F3992FA2BB29004D765B /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5894F3982FA2BB29004D765B /* ProfileView.swift */; };
 		5894F39B2FA2BB3C004D765B /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5894F39A2FA2BB3C004D765B /* EditProfileView.swift */; };
+		58F539562FA7EC59008CCB40 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F539552FA7EC59008CCB40 /* User.swift */; };
+		58F539582FA7EC6A008CCB40 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F539572FA7EC6A008CCB40 /* UserManager.swift */; };
+		58F5395A2FA7EC85008CCB40 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F539592FA7EC85008CCB40 /* AuthService.swift */; };
+		58F5395C2FA800A1008CCB40 /* EmailService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F5395B2FA800A0008CCB40 /* EmailService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,9 +49,10 @@
 		5894F3942FA2BAEA004D765B /* MeditationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeditationView.swift; sourceTree = "<group>"; };
 		5894F3982FA2BB29004D765B /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		5894F39A2FA2BB3C004D765B /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
-		589CCA3E2FA3B723004EB961 /* .gitkeep.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = .gitkeep.md; sourceTree = "<group>"; };
-		589CCA3F2FA3B833004EB961 /* test1.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = test1.md; sourceTree = "<group>"; };
-		589CCA402FA3B83E004EB961 /* test2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = test2.md; sourceTree = "<group>"; };
+		58F539552FA7EC59008CCB40 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		58F539572FA7EC6A008CCB40 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		58F539592FA7EC85008CCB40 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		58F5395B2FA800A0008CCB40 /* EmailService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,7 +192,8 @@
 		589CCA3B2FA3B6C8004EB961 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				589CCA402FA3B83E004EB961 /* test2.md */,
+				58F5395B2FA800A0008CCB40 /* EmailService.swift */,
+				58F539592FA7EC85008CCB40 /* AuthService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -195,7 +201,7 @@
 		589CCA3C2FA3B6CF004EB961 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				589CCA3F2FA3B833004EB961 /* test1.md */,
+				58F539552FA7EC59008CCB40 /* User.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -203,7 +209,7 @@
 		589CCA3D2FA3B6DA004EB961 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				589CCA3E2FA3B723004EB961 /* .gitkeep.md */,
+				58F539572FA7EC6A008CCB40 /* UserManager.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -281,18 +287,22 @@
 				5894F39B2FA2BB3C004D765B /* EditProfileView.swift in Sources */,
 				5894F3842FA2B953004D765B /* ProfileViewModel.swift in Sources */,
 				5894F3932FA2BAD0004D765B /* DashboardView.swift in Sources */,
+				58F5395A2FA7EC85008CCB40 /* AuthService.swift in Sources */,
 				5894F38D2FA2BA93004D765B /* ApproachView.swift in Sources */,
+				58F539562FA7EC59008CCB40 /* User.swift in Sources */,
 				5894F3892FA2BA35004D765B /* LoginView.swift in Sources */,
 				5894F36F2FA2B789004D765B /* Persistence.swift in Sources */,
 				5894F3682FA2B787004D765B /* ContentView.swift in Sources */,
 				5894F3952FA2BAEA004D765B /* MeditationView.swift in Sources */,
 				5894F3662FA2B787004D765B /* Balance_DigitalApp.swift in Sources */,
 				5894F38B2FA2BA5A004D765B /* RegisterView.swift in Sources */,
+				58F5395C2FA800A1008CCB40 /* EmailService.swift in Sources */,
 				5894F3722FA2B789004D765B /* Balance_Digital.xcdatamodeld in Sources */,
 				5894F3812FA2B8F6004D765B /* MainTabView.swift in Sources */,
 				5894F38F2FA2BAA2004D765B /* ProgrammedApproach.swift in Sources */,
 				5894F3992FA2BB29004D765B /* ProfileView.swift in Sources */,
 				5894F3912FA2BABC004D765B /* CustomTabBarView.swift in Sources */,
+				58F539582FA7EC6A008CCB40 /* UserManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

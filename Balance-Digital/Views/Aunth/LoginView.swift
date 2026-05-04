@@ -318,10 +318,22 @@ struct LoginView: View {
         isLoading = true
         HapticManager.impact(style: .medium)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            isLoading = false
-            onLoginSuccess()
-            showDashboardPreview = true
+        Task {
+            do {
+                let user = try await AuthService.shared.login(email: email, password: password)
+                print("Bienvenido de nuevo: \(user.fullName)")
+                
+                await MainActor.run {
+                    isLoading = false
+                    onLoginSuccess()
+                    showDashboardPreview = true
+                }
+            } catch {
+                await MainActor.run {
+                    isLoading = false
+                    triggerError(msg: error.localizedDescription)
+                }
+            }
         }
     }
 

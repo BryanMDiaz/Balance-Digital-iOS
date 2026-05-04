@@ -308,7 +308,28 @@ struct RegisterView: View {
 
         withAnimation { isLoading = true }
         HapticManager.impact(style: .medium)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { withAnimation { isLoading = false } }
+        
+        Task {
+            do {
+                let user = try await AuthService.shared.register(
+                    fullName: fullName,
+                    email: email,
+                    password: password
+                )
+                print("Usuario registrado con éxito: \(user.fullName)")
+                
+                await MainActor.run {
+                    withAnimation { isLoading = false }
+                    dismiss()
+                }
+            } catch {
+                await MainActor.run {
+                    withAnimation { isLoading = false }
+                    errorMessage = error.localizedDescription
+                    HapticManager.notification(type: .error)
+                }
+            }
+        }
     }
 
     private func isValidEmail(_ email: String) -> Bool {
