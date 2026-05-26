@@ -28,6 +28,10 @@
 		58F539582FA7EC6A008CCB40 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F539572FA7EC6A008CCB40 /* UserManager.swift */; };
 		58F5395A2FA7EC85008CCB40 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F539592FA7EC85008CCB40 /* AuthService.swift */; };
 		58F5395C2FA800A1008CCB40 /* EmailService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F5395B2FA800A0008CCB40 /* EmailService.swift */; };
+		D37AB6472FC6862600D83CA7 /* MeditationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37AB6462FC6862600D83CA7 /* MeditationManager.swift */; };
+		D37AB6492FC6863D00D83CA7 /* UserManager+Meditation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37AB6482FC6863C00D83CA7 /* UserManager+Meditation.swift */; };
+		D37AB64B2FC686BF00D83CA7 /* MeditationSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37AB64A2FC686BE00D83CA7 /* MeditationSessionManager.swift */; };
+		D37AB64E2FC6874A00D83CA7 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37AB64D2FC6874A00D83CA7 /* SessionManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +57,10 @@
 		58F539572FA7EC6A008CCB40 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		58F539592FA7EC85008CCB40 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		58F5395B2FA800A0008CCB40 /* EmailService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailService.swift; sourceTree = "<group>"; };
+		D37AB6462FC6862600D83CA7 /* MeditationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeditationManager.swift; sourceTree = "<group>"; };
+		D37AB6482FC6863C00D83CA7 /* UserManager+Meditation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserManager+Meditation.swift"; sourceTree = "<group>"; };
+		D37AB64A2FC686BE00D83CA7 /* MeditationSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MeditationSessionManager.swift; path = "Balance-Digital/Meditation/MeditationSessionManager.swift"; sourceTree = SOURCE_ROOT; };
+		D37AB64D2FC6874A00D83CA7 /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +93,7 @@
 		5894F3642FA2B787004D765B /* Balance-Digital */ = {
 			isa = PBXGroup;
 			children = (
+				D37AB64C2FC6874A00D83CA7 /* Session */,
 				589CCA3D2FA3B6DA004EB961 /* Database */,
 				589CCA3C2FA3B6CF004EB961 /* Models */,
 				589CCA3B2FA3B6C8004EB961 /* Services */,
@@ -157,6 +166,7 @@
 		5894F37D2FA2B88B004D765B /* Meditation */ = {
 			isa = PBXGroup;
 			children = (
+				D37AB64A2FC686BE00D83CA7 /* MeditationSessionManager.swift */,
 				5894F3942FA2BAEA004D765B /* MeditationView.swift */,
 			);
 			path = Meditation;
@@ -209,9 +219,19 @@
 		589CCA3D2FA3B6DA004EB961 /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				D37AB6482FC6863C00D83CA7 /* UserManager+Meditation.swift */,
+				D37AB6462FC6862600D83CA7 /* MeditationManager.swift */,
 				58F539572FA7EC6A008CCB40 /* UserManager.swift */,
 			);
 			path = Database;
+			sourceTree = "<group>";
+		};
+		D37AB64C2FC6874A00D83CA7 /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				D37AB64D2FC6874A00D83CA7 /* SessionManager.swift */,
+			);
+			path = Session;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -285,15 +305,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				5894F39B2FA2BB3C004D765B /* EditProfileView.swift in Sources */,
+				D37AB64E2FC6874A00D83CA7 /* SessionManager.swift in Sources */,
 				5894F3842FA2B953004D765B /* ProfileViewModel.swift in Sources */,
 				5894F3932FA2BAD0004D765B /* DashboardView.swift in Sources */,
 				58F5395A2FA7EC85008CCB40 /* AuthService.swift in Sources */,
 				5894F38D2FA2BA93004D765B /* ApproachView.swift in Sources */,
 				58F539562FA7EC59008CCB40 /* User.swift in Sources */,
 				5894F3892FA2BA35004D765B /* LoginView.swift in Sources */,
+				D37AB6472FC6862600D83CA7 /* MeditationManager.swift in Sources */,
+				D37AB64B2FC686BF00D83CA7 /* MeditationSessionManager.swift in Sources */,
 				5894F36F2FA2B789004D765B /* Persistence.swift in Sources */,
 				5894F3682FA2B787004D765B /* ContentView.swift in Sources */,
 				5894F3952FA2BAEA004D765B /* MeditationView.swift in Sources */,
+				D37AB6492FC6863D00D83CA7 /* UserManager+Meditation.swift in Sources */,
 				5894F3662FA2B787004D765B /* Balance_DigitalApp.swift in Sources */,
 				5894F38B2FA2BA5A004D765B /* RegisterView.swift in Sources */,
 				58F5395C2FA800A1008CCB40 /* EmailService.swift in Sources */,
