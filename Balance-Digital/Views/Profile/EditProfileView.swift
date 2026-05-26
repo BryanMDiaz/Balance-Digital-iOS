@@ -1,44 +1,43 @@
 //
 //  EditProfileView.swift
-//  BalanceDigitalApp
+//  Balance-Digital
 //
-//  Created by Bryan_Dev on 14/4/26.
-// HOLA
 
 import SwiftUI
 import PhotosUI
 
 struct EditProfileView: View {
 
-    // MARK: - State — Datos personales
-    @State private var firstName         = "Bryan"
-    @State private var lastName          = "Diaz"
-    @State private var birthDate         = Calendar.current.date(from: DateComponents(year: 2000, month: 6, day: 15)) ?? Date()
-    @State private var email             = "bryan@example.com"
+    // MARK: - State — Datos personales (se cargan del usuario logueado)
+    @State private var firstName = ""
+    @State private var lastName  = ""
+    @State private var email     = ""
 
-    // Contraseña
-    @State private var oldPassword       = ""
-    @State private var newPassword       = ""
-    @State private var showOldPassword   = false
-    @State private var showNewPassword   = false
-
-    // Zona horaria
-    @State private var selectedTimezone  = TimeZone.current
-
-    // UI State
-    @State private var isEditing         = false
-    @State private var isLoading         = false
-    @State private var errorMessage      = ""
-    @State private var successMessage    = ""
-    @State private var shakeOffset: CGFloat = 0
-    @State private var appearances       = Array(repeating: false, count: 5)
-    @State private var showDatePicker    = false
-    @State private var showTimezonePicker = false
-
-    // Foto
+    // Foto seleccionada (datos crudos para poder persistirla)
+    @State private var profileImageData: Data? = nil
     @State private var selectedPhoto: PhotosPickerItem? = nil
 
-    @EnvironmentObject var profileViewModel: ProfileViewModel
+    // Solo UI (no se persisten en esta versión)
+    @State private var birthDate = Calendar.current.date(from: DateComponents(year: 2000, month: 6, day: 15)) ?? Date()
+    @State private var selectedTimezone = TimeZone.current
+
+    // Contraseña
+    @State private var oldPassword     = ""
+    @State private var newPassword     = ""
+    @State private var showOldPassword = false
+    @State private var showNewPassword = false
+
+    // UI State
+    @State private var isEditing      = false
+    @State private var isLoading      = false
+    @State private var errorMessage   = ""
+    @State private var successMessage = ""
+    @State private var shakeOffset: CGFloat = 0
+    @State private var appearances    = Array(repeating: false, count: 5)
+    @State private var showDatePicker = false
+    @State private var showTimezonePicker = false
+
+    @EnvironmentObject var session: SessionManager
     @Environment(\.dismiss) var dismiss
 
     private let commonTimezones: [TimeZone] = {
@@ -57,7 +56,6 @@ struct EditProfileView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
 
-                    // Botón Volver
                     Group {
                         Spacer().frame(height: 20)
                         backButton
@@ -65,7 +63,6 @@ struct EditProfileView: View {
                             .opacity(appearances[0] ? 1 : 0)
                     }
 
-                    // Avatar
                     Group {
                         Spacer().frame(height: 30)
                         avatarSection
@@ -73,7 +70,6 @@ struct EditProfileView: View {
                             .opacity(appearances[1] ? 1 : 0)
                     }
 
-                    // Header
                     Group {
                         Spacer().frame(height: 20)
                         VStack(spacing: 6) {
@@ -89,7 +85,6 @@ struct EditProfileView: View {
                         .opacity(appearances[2] ? 1 : 0)
                     }
 
-                    // Campos
                     Group {
                         Spacer().frame(height: 28)
                         personalSection
@@ -113,7 +108,7 @@ struct EditProfileView: View {
                         }
                     }
 
-                    // Mensajes
+                    // Mensajes de estado
                     Group {
                         if !errorMessage.isEmpty {
                             Text(errorMessage)
@@ -137,7 +132,6 @@ struct EditProfileView: View {
                         }
                     }
 
-                    // Botón principal + footer
                     Group {
                         Spacer().frame(height: 28)
                         actionButton
@@ -145,11 +139,7 @@ struct EditProfileView: View {
                         if isEditing {
                             Button {
                                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                                    isEditing = false
-                                    errorMessage = ""
-                                    successMessage = ""
-                                    oldPassword = ""
-                                    newPassword = ""
+                                    cancelEditing()
                                 }
                                 HapticManager.impact(style: .light)
                             } label: {
@@ -169,16 +159,13 @@ struct EditProfileView: View {
         }
         .navigationBarHidden(true)
         .preferredColorScheme(.light)
-        .onAppear { startSequence() }
+        .onAppear {
+            loadCurrentUser()
+            startSequence()
+        }
         .animation(.spring(response: 0.38, dampingFraction: 0.82), value: isEditing)
-        // Date Picker Sheet
-        .sheet(isPresented: $showDatePicker) {
-            datepickerSheet
-        }
-        // Timezone Picker Sheet
-        .sheet(isPresented: $showTimezonePicker) {
-            timezonePickerSheet
-        }
+        .sheet(isPresented: $showDatePicker) { datepickerSheet }
+        .sheet(isPresented: $showTimezonePicker) { timezonePickerSheet }
     }
 
     // MARK: - Back Button
@@ -209,8 +196,8 @@ struct EditProfileView: View {
         VStack(spacing: 10) {
             PhotosPicker(selection: $selectedPhoto, matching: .images) {
                 ZStack(alignment: .bottomTrailing) {
-                    if let avatarImage = profileViewModel.avatarImage {
-                        avatarImage
+                    if let data = profileImageData, let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
                             .frame(width: 96, height: 96)
@@ -240,16 +227,16 @@ struct EditProfileView: View {
                 }
                 .shadow(color: .black.opacity(0.12), radius: 16, x: 0, y: 8)
             }
+            .disabled(!isEditing)
             .onChange(of: selectedPhoto) { newItem in
                 Task { @MainActor in
                     guard let newItem else { return }
-                    if let data = try? await newItem.loadTransferable(type: Data.self),
-                       let uiImage = UIImage(data: data) {
-                        profileViewModel.avatarImage = Image(uiImage: uiImage)
+                    if let data = try? await newItem.loadTransferable(type: Data.self) {
+                        profileImageData = data
                     }
                 }
             }
-            Text("Toca para cambiar foto")
+            Text(isEditing ? "Toca para cambiar foto" : "Foto de perfil")
                 .font(.system(size: 12, weight: .medium))
                 .foregroundColor(.secondary)
         }
@@ -260,24 +247,14 @@ struct EditProfileView: View {
         VStack(spacing: 14) {
             sectionLabel("Datos personales")
 
-            profileField(
-                icon: "person.fill",
-                placeholder: "Nombre",
-                text: $firstName,
-                isDisabled: !isEditing
-            )
+            profileField(icon: "person.fill", placeholder: "Nombre",
+                         text: $firstName, isDisabled: !isEditing)
 
-            profileField(
-                icon: "person.fill",
-                placeholder: "Apellido",
-                text: $lastName,
-                isDisabled: !isEditing
-            )
+            profileField(icon: "person.fill", placeholder: "Apellido",
+                         text: $lastName, isDisabled: !isEditing)
 
-            // Fecha de nacimiento
-            Button {
-                if isEditing { showDatePicker = true }
-            } label: {
+            // Fecha de nacimiento (solo UI en esta versión)
+            Button { if isEditing { showDatePicker = true } } label: {
                 HStack(spacing: 14) {
                     Image(systemName: "calendar")
                         .font(.system(size: 16))
@@ -297,46 +274,8 @@ struct EditProfileView: View {
                 .frame(height: 62)
                 .background(!isEditing ? Color(hex: "F7F7FA") : Color.white)
                 .cornerRadius(18)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18)
-                        .stroke(!isEditing ? Color.black.opacity(0.04) : Color.black.opacity(0.1), lineWidth: 1)
-                )
-            }
-            .buttonStyle(.plain)
-            .disabled(!isEditing)
-
-            // Zona horaria
-            Button {
-                if isEditing { showTimezonePicker = true }
-            } label: {
-                HStack(spacing: 14) {
-                    Image(systemName: "globe")
-                        .font(.system(size: 16))
-                        .foregroundColor(!isEditing ? Color(.systemGray3) : .black)
-                        .frame(width: 20)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(selectedTimezone.identifier.replacingOccurrences(of: "_", with: " "))
-                            .font(.system(size: 15, weight: .medium))
-                            .foregroundColor(!isEditing ? Color(.systemGray3) : .primary)
-                        Text(timezoneOffset(selectedTimezone))
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.secondary)
-                    }
-                    Spacer()
-                    if isEditing {
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(Color(.systemGray3))
-                    }
-                }
-                .padding(.horizontal, 20)
-                .frame(height: 62)
-                .background(!isEditing ? Color(hex: "F7F7FA") : Color.white)
-                .cornerRadius(18)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18)
-                        .stroke(!isEditing ? Color.black.opacity(0.04) : Color.black.opacity(0.1), lineWidth: 1)
-                )
+                .overlay(RoundedRectangle(cornerRadius: 18)
+                    .stroke(!isEditing ? Color.black.opacity(0.04) : Color.black.opacity(0.1), lineWidth: 1))
             }
             .buttonStyle(.plain)
             .disabled(!isEditing)
@@ -347,41 +286,23 @@ struct EditProfileView: View {
     private var accountSection: some View {
         VStack(spacing: 14) {
             sectionLabel("Cuenta")
-
-            profileField(
-                icon: "envelope.fill",
-                placeholder: "Correo electrónico",
-                text: $email,
-                isDisabled: !isEditing,
-                keyboard: .emailAddress
-            )
+            profileField(icon: "envelope.fill", placeholder: "Correo electrónico",
+                         text: $email, isDisabled: !isEditing, keyboard: .emailAddress)
         }
     }
 
     // MARK: - Password Section
     private var passwordSection: some View {
         VStack(spacing: 14) {
-            sectionLabel("Cambiar contraseña")
+            sectionLabel("Cambiar contraseña (opcional)")
 
-            profileField(
-                icon: "lock.fill",
-                placeholder: "Contraseña actual",
-                text: $oldPassword,
-                isDisabled: false,
-                isSecure: !showOldPassword,
-                showToggle: true,
-                isVisible: $showOldPassword
-            )
+            profileField(icon: "lock.fill", placeholder: "Contraseña actual",
+                         text: $oldPassword, isDisabled: false,
+                         isSecure: !showOldPassword, showToggle: true, isVisible: $showOldPassword)
 
-            profileField(
-                icon: "lock.rotation",
-                placeholder: "Contraseña nueva",
-                text: $newPassword,
-                isDisabled: false,
-                isSecure: !showNewPassword,
-                showToggle: true,
-                isVisible: $showNewPassword
-            )
+            profileField(icon: "lock.rotation", placeholder: "Contraseña nueva",
+                         text: $newPassword, isDisabled: false,
+                         isSecure: !showNewPassword, showToggle: true, isVisible: $showNewPassword)
         }
     }
 
@@ -410,25 +331,11 @@ struct EditProfileView: View {
     // MARK: - Date Picker Sheet
     private var datepickerSheet: some View {
         VStack(spacing: 0) {
-            Capsule()
-                .fill(Color(.systemGray4))
-                .frame(width: 40, height: 5)
-                .padding(.top, 12)
-
+            Capsule().fill(Color(.systemGray4)).frame(width: 40, height: 5).padding(.top, 12)
             Text("Fecha de nacimiento")
-                .font(.system(size: 20, weight: .bold, design: .rounded))
-                .padding(.top, 20)
-
-            DatePicker(
-                "",
-                selection: $birthDate,
-                in: ...Date(),
-                displayedComponents: .date
-            )
-            .datePickerStyle(.wheel)
-            .labelsHidden()
-            .padding(.horizontal, 20)
-
+                .font(.system(size: 20, weight: .bold, design: .rounded)).padding(.top, 20)
+            DatePicker("", selection: $birthDate, in: ...Date(), displayedComponents: .date)
+                .datePickerStyle(.wheel).labelsHidden().padding(.horizontal, 20)
             Button {
                 showDatePicker = false
                 HapticManager.impact(style: .light)
@@ -436,13 +343,10 @@ struct EditProfileView: View {
                 Text("Confirmar")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(Color.black)
-                    .cornerRadius(16)
+                    .frame(maxWidth: .infinity).frame(height: 56)
+                    .background(Color.black).cornerRadius(16)
             }
-            .padding(.horizontal, 28)
-            .padding(.bottom, 34)
+            .padding(.horizontal, 28).padding(.bottom, 34)
         }
         .presentationDetents([.medium])
         .presentationDragIndicator(.hidden)
@@ -451,16 +355,10 @@ struct EditProfileView: View {
     // MARK: - Timezone Picker Sheet
     private var timezonePickerSheet: some View {
         VStack(spacing: 0) {
-            Capsule()
-                .fill(Color(.systemGray4))
-                .frame(width: 40, height: 5)
-                .padding(.top, 12)
-
+            Capsule().fill(Color(.systemGray4)).frame(width: 40, height: 5).padding(.top, 12)
             Text("Zona horaria")
                 .font(.system(size: 20, weight: .bold, design: .rounded))
-                .padding(.top, 20)
-                .padding(.bottom, 10)
-
+                .padding(.top, 20).padding(.bottom, 10)
             List(commonTimezones, id: \.identifier) { tz in
                 Button {
                     selectedTimezone = tz
@@ -470,17 +368,14 @@ struct EditProfileView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 3) {
                             Text(tz.identifier.replacingOccurrences(of: "_", with: " "))
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundColor(.primary)
+                                .font(.system(size: 15, weight: .semibold)).foregroundColor(.primary)
                             Text(timezoneOffset(tz))
-                                .font(.system(size: 13))
-                                .foregroundColor(.secondary)
+                                .font(.system(size: 13)).foregroundColor(.secondary)
                         }
                         Spacer()
                         if tz.identifier == selectedTimezone.identifier {
                             Image(systemName: "checkmark")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundColor(.black)
+                                .font(.system(size: 14, weight: .bold)).foregroundColor(.black)
                         }
                     }
                 }
@@ -496,7 +391,8 @@ struct EditProfileView: View {
     private var avatarInitials: String {
         let f = firstName.prefix(1).uppercased()
         let l = lastName.prefix(1).uppercased()
-        return "\(f)\(l)"
+        let result = "\(f)\(l)"
+        return result.isEmpty ? "?" : result
     }
 
     private var formattedBirthDate: String {
@@ -574,8 +470,27 @@ struct EditProfileView: View {
         .animation(.easeInOut(duration: 0.2), value: isDisabled)
     }
 
-    // MARK: - Logic
+    // MARK: - Carga inicial (datos del usuario logueado)
+    private func loadCurrentUser() {
+        guard let user = session.currentUser else { return }
+        firstName = user.firstName
+        lastName  = user.lastName
+        email     = user.email
+        profileImageData = user.profileImageData
+    }
+
+    private func cancelEditing() {
+        isEditing = false
+        errorMessage = ""
+        successMessage = ""
+        oldPassword = ""
+        newPassword = ""
+        loadCurrentUser() // descartar cambios no guardados
+    }
+
+    // MARK: - Lógica de guardado real
     private func handleAction() {
+        // Primer toque: pasar a modo edición.
         if !isEditing {
             withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
                 isEditing = true
@@ -585,46 +500,74 @@ struct EditProfileView: View {
             HapticManager.impact(style: .medium)
             return
         }
+
         errorMessage = ""
         successMessage = ""
 
-        if firstName.trimmingCharacters(in: .whitespaces).isEmpty {
-            triggerError("El nombre no puede estar vacío.")
+        guard let currentUser = session.currentUser else {
+            triggerError("No hay una sesión activa.")
             return
+        }
+
+        // 1) Validar campos obligatorios
+        if firstName.trimmingCharacters(in: .whitespaces).isEmpty {
+            triggerError("El nombre no puede estar vacío."); return
         }
         if lastName.trimmingCharacters(in: .whitespaces).isEmpty {
-            triggerError("El apellido no puede estar vacío.")
-            return
+            triggerError("El apellido no puede estar vacío."); return
         }
         if !isValidEmail(email) {
-            triggerError("El formato del correo no es válido.")
-            return
+            triggerError("El formato del correo no es válido."); return
         }
-        if !oldPassword.isEmpty || !newPassword.isEmpty {
+
+        // 2) Validar cambio de contraseña (si el usuario lo intenta)
+        let wantsPasswordChange = !oldPassword.isEmpty || !newPassword.isEmpty
+        if wantsPasswordChange {
             if oldPassword.isEmpty {
-                triggerError("Ingresa tu contraseña actual.")
-                return
+                triggerError("Ingresa tu contraseña actual."); return
             }
             if newPassword.count < 6 {
-                triggerError("La nueva contraseña debe tener al menos 6 caracteres.")
-                return
+                triggerError("La nueva contraseña debe tener al menos 6 caracteres."); return
+            }
+            // Verificar que la contraseña actual sea correcta
+            if UserManager.shared.validateUser(email: currentUser.email, password: oldPassword) == nil {
+                triggerError("La contraseña actual es incorrecta."); return
             }
         }
 
+        // 3) Guardar en la base de datos (estado de carga)
         withAnimation { isLoading = true }
         HapticManager.impact(style: .medium)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
+
+        let fullName = User.combinedName(first: firstName, last: lastName)
+
+        do {
+            let updated = try UserManager.shared.updateUser(
+                id: currentUser.id,
+                fullName: fullName,
+                email: email,
+                profileImageData: profileImageData,
+                newPassword: wantsPasswordChange ? newPassword : nil
+            )
+
+            // 4) Refrescar la sesión (mantiene la sesión activa) y la vista
+            session.refresh(with: updated)
+
             withAnimation {
                 isLoading = false
                 isEditing = false
-                successMessage = "¡Perfil actualizado correctamente!"
                 oldPassword = ""
                 newPassword = ""
+                successMessage = "¡Perfil actualizado correctamente!"
             }
             HapticManager.notification(type: .success)
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 withAnimation { successMessage = "" }
             }
+        } catch {
+            withAnimation { isLoading = false }
+            triggerError(error.localizedDescription)
         }
     }
 
@@ -658,7 +601,12 @@ struct EditProfileView: View {
 // MARK: - Preview
 struct EditProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        EditProfileView()
-            .environmentObject(ProfileViewModel())
+        let session = SessionManager.shared
+        session.currentUser = User(id: UUID(),
+                                   fullName: "Bryan Diaz",
+                                   email: "bryan@example.com",
+                                   createdAt: Date())
+        return EditProfileView()
+            .environmentObject(session)
     }
 }

@@ -12,6 +12,10 @@ import UIKit
 struct Balance_DigitalApp: App {
     let persistenceController = PersistenceController.shared
 
+    // Objetos compartidos por toda la app
+    @StateObject private var session = SessionManager.shared
+    @StateObject private var profileViewModel = ProfileViewModel()
+
     init() {
         // Ejecutar limpieza (comenta esta línea después de usarla)
         // UserManager.shared.deleteAllUsers()
@@ -21,6 +25,8 @@ struct Balance_DigitalApp: App {
         WindowGroup {
             LoginView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(session)          // <- usuario logueado disponible en toda la app
+                .environmentObject(profileViewModel)
         }
     }
 }

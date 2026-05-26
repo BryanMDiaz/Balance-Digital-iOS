@@ -16,6 +16,8 @@ struct LoginView: View {
     @State private var appearances = Array(repeating: false, count: 5)
     @State private var showDashboardPreview = false
 
+    @EnvironmentObject var session: SessionManager   // <- sesión global
+
     var onLoginSuccess: () -> Void = {}
 
     var body: some View {
@@ -321,9 +323,11 @@ struct LoginView: View {
         Task {
             do {
                 let user = try await AuthService.shared.login(email: email, password: password)
-                print("Bienvenido de nuevo: \(user.fullName)")
-                
+
                 await MainActor.run {
+                    // Guardamos al usuario logueado en la sesión global.
+                    session.start(with: user)
+
                     isLoading = false
                     onLoginSuccess()
                     showDashboardPreview = true
@@ -356,5 +360,6 @@ struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
             .environmentObject(ProfileViewModel())
+            .environmentObject(SessionManager.shared)
     }
 }
